@@ -24,14 +24,14 @@ export function ButtonLink({
   variant?: "orange" | "navy" | "white";
 }) {
   const styles = {
-    orange: "bg-orange text-white hover:bg-navy",
-    navy: "bg-navy text-white hover:bg-orange",
-    white: "bg-white text-navy hover:bg-orange hover:text-white",
+    orange: "bg-blue text-white hover:bg-navy",
+    navy: "bg-navy text-white hover:bg-blue",
+    white: "bg-white text-navy hover:bg-blue hover:text-white",
   }[variant];
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-display text-sm font-semibold transition-[color,background-color,box-shadow] hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange ${styles}`}
+      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-display text-sm font-semibold transition-[color,background-color,box-shadow] hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue ${styles}`}
     >
       {children}
       <Arrow className="transition-transform group-hover:translate-x-1" />
