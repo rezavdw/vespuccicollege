@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+/* Kleuren overgenomen uit het Elementor-kit van vespuccicollege.net */
+@theme {
+  --color-orange: #ff821f;
+  --color-orange-dark: #ec732f;
+  --color-navy: #1c244c;
+  --color-navy-deep: #10104e;
+  --color-blue: #417cd4;
+  --color-sun: #fdb833; /* geel uit de hero-foto */
+  --color-cream: #fbf3e8;
+  --color-ice: #f1f6ff;
+  --color-muted: #7a7a7a;
+
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-navy);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
