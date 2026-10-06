@@ -31,7 +31,7 @@ export function ButtonLink({
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-display text-sm font-semibold transition-colors ${styles}`}
+      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-display text-sm font-semibold transition-[color,background-color,box-shadow] hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orange ${styles}`}
     >
       {children}
       <Arrow className="transition-transform group-hover:translate-x-1" />
