@@ -44,3 +44,7 @@ npm run build
 - Iedereen werkt op een eigen branch (bijvoorbeeld `reza`), nooit direct op `main`.
 - Wijzigingen gaan via een pull request naar `main`.
 - Teksten neem je letterlijk over van de huidige site; verzin geen nieuwe feiten.
+
+## Team
+
+- Lex
