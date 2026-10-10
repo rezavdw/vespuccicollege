@@ -25,7 +25,7 @@ npm run build
 | --- | --- |
 | `src/lib/site.ts` | Menu en contactgegevens |
 | `src/app/page.tsx` | Homepage: metadata, JSON-LD en de volgorde van de secties |
-| `src/components/home/` | Eén component per homepage-sectie, plus `Reveal`, `Parallax` en gedeelde UI |
+| `src/components/home/` | Eén component per homepage-sectie, plus `JourneyLine` (doorlopende route), `Reveal`, `Parallax` en gedeelde UI |
 | `src/app/[...slug]/page.tsx` | Tijdelijke pagina voor subpagina's die nog niet zijn overgezet |
 | `src/components/` | Header, Footer en kleine UI-onderdelen |
 | `src/app/globals.css` | Kleuren en fonts (Tailwind-theme) |

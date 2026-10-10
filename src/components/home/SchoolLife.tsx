@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Parallax from "./Parallax";
 import Reveal from "./Reveal";
-import { ArrowLink, container } from "./ui";
+import { ArrowLink, Waypoint, container } from "./ui";
 
 export default function SchoolLife() {
   return (
     <section aria-labelledby="leven-op-school" className="overflow-hidden py-20 lg:py-32">
-      <div className={container}>
+      <div className={`${container} relative`}>
+        <Waypoint className="left-5 top-0" />
         <div className="grid gap-x-10 gap-y-6 lg:grid-cols-12">
           <Reveal className="lg:col-span-6">
             <h2

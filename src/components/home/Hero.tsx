@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { contact } from "@/lib/site";
-import { Button, CompassRose, container } from "./ui";
+import { BrushStroke, Button, CompassRose, Waypoint, container } from "./ui";
 
 export default function Hero() {
   return (
@@ -8,15 +8,19 @@ export default function Hero() {
       <div className="chart-grid absolute inset-0 -z-10 text-navy" aria-hidden="true" />
       <CompassRose className="absolute -right-24 -top-28 -z-10 h-[26rem] w-[26rem] text-navy/10 lg:-right-16 lg:-top-24 lg:h-[34rem] lg:w-[34rem] lg:text-navy/15" />
 
-      <div className={`${container} pb-12 pt-12 sm:pt-16 lg:pb-20 lg:pt-20`}>
+      <div className={`${container} relative pb-12 pt-12 sm:pt-16 lg:pb-20 lg:pt-20`}>
         <h1 className="hero-rise text-[clamp(2.6rem,7.4vw,6rem)] font-semibold leading-[0.96] tracking-[-0.035em]">
           Ontdek jezelf,
           <br />
-          <span className="text-ember">creëer je toekomst.</span>
+          <span className="relative isolate inline-block text-ember">
+            <BrushStroke className="absolute -inset-x-[0.15em] bottom-[0.02em] -z-10 h-[0.42em] w-[calc(100%+0.3em)] text-peach" />
+            creëer je toekomst.
+          </span>
         </h1>
 
         <div className="mt-10 grid gap-x-10 gap-y-10 lg:mt-14 lg:grid-cols-12">
-          <div className="lg:col-span-4 lg:pt-4">
+          <div className="relative lg:col-span-4 lg:pt-4">
+            <Waypoint origin className="-left-7 top-9" />
             <p className="hero-rise max-w-md text-lg leading-relaxed text-slate [--i:1] sm:text-xl">
               <strong className="font-semibold text-navy">Een Nederlands diploma, een Caribische jeugd.</strong> Mavo,
               havo en vwo op Curaçao, in kleine klassen met veel persoonlijke aandacht.
@@ -65,6 +69,7 @@ export default function Hero() {
             </figcaption>
           </figure>
         </div>
+        <Waypoint className="bottom-0 left-5" />
       </div>
     </section>
   );

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import ClosingCta from "@/components/home/ClosingCta";
 import Hero from "@/components/home/Hero";
-import KeyFigures, { type KeyFigure } from "@/components/home/KeyFigures";
+import JourneyLine from "@/components/home/JourneyLine";
 import QuickLinks from "@/components/home/QuickLinks";
 import Relocation from "@/components/home/Relocation";
 import RouteSection from "@/components/home/RouteSection";
 import SchoolLife from "@/components/home/SchoolLife";
 import Team from "@/components/home/Team";
+import Timeline from "@/components/home/Timeline";
 import Voices from "@/components/home/Voices";
 import WhyVespucci from "@/components/home/WhyVespucci";
 import { SITE_URL, contact } from "@/lib/site";
@@ -56,13 +57,8 @@ const jsonLd = {
   sameAs: [contact.facebook],
 };
 
-// TODO: slagingspercentage, klassengrootte en leerlingaantal laten aanleveren door de school.
-const keyFigures: KeyFigure[] = [
-  { label: "Slagingspercentage" },
-  { label: "Gemiddelde klassengrootte" },
-  { label: "Leerlingen" },
-  { label: "Opgericht", value: "1999" },
-];
+// TODO: zodra de school slagingspercentage, klassengrootte en leerlingaantal aanlevert,
+// kan <KeyFigures figures={...} /> uit components/home/KeyFigures onder de tijdlijn.
 
 export default function Home() {
   return (
@@ -76,16 +72,18 @@ export default function Home() {
         <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
       </noscript>
 
-      <Hero />
-      <QuickLinks />
-      <WhyVespucci />
-      <RouteSection />
-      <Relocation />
-      <SchoolLife />
-      <Voices />
-      <Team />
-      <KeyFigures figures={keyFigures} />
-      <ClosingCta />
+      <JourneyLine>
+        <Hero />
+        <QuickLinks />
+        <WhyVespucci />
+        <RouteSection />
+        <Relocation />
+        <SchoolLife />
+        <Voices />
+        <Team />
+        <Timeline />
+        <ClosingCta />
+      </JourneyLine>
     </>
   );
 }

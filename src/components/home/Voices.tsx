@@ -1,5 +1,5 @@
 import Reveal from "./Reveal";
-import { container } from "./ui";
+import { Waypoint, container } from "./ui";
 
 // TODO: vervangen door echte interviews + foto
 const voices = [
@@ -34,7 +34,8 @@ export default function Voices() {
   const [lead, ...others] = voices;
   return (
     <section aria-labelledby="stemmen" className="bg-sand py-20 lg:py-32">
-      <div className={container}>
+      <div className={`${container} relative`}>
+        <Waypoint className="bottom-0 left-5" />
         <h2 id="stemmen" className="text-2xl font-semibold tracking-[-0.02em] lg:text-3xl">
           Wat leerlingen en ouders zeggen
         </h2>

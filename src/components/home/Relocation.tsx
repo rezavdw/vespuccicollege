@@ -1,5 +1,6 @@
 import Reveal from "./Reveal";
-import { ArrowLink, container } from "./ui";
+import CrossingMap from "./CrossingMap";
+import { ArrowLink, Waypoint, container } from "./ui";
 
 const steps = [
   {
@@ -28,7 +29,8 @@ export default function Relocation() {
     <section aria-labelledby="verhuizen" className="relative isolate overflow-hidden bg-navy py-20 text-chalk lg:py-32">
       <div className="chart-grid absolute inset-0 -z-10 text-chalk" aria-hidden="true" />
 
-      <div className={`${container} grid gap-x-10 gap-y-14 lg:grid-cols-12`}>
+      <div className={`${container} relative grid gap-x-10 gap-y-14 lg:grid-cols-12`}>
+        <Waypoint className="bottom-0 right-5" />
         <Reveal className="lg:col-span-5">
           <h2
             id="verhuizen"
@@ -41,18 +43,7 @@ export default function Relocation() {
             opleiding gewoon door. Instromen kan het hele schooljaar, en we begeleiden je bij de overstap.
           </p>
 
-          {/* De oversteek: van de breedtegraad van Nederland naar die van Curaçao */}
-          <div className="mt-10 max-w-sm" aria-hidden="true">
-            <svg viewBox="0 0 360 70" fill="none" className="w-full text-orange">
-              <path d="M8 12C120 12 240 58 352 58" stroke="currentColor" strokeWidth="2" strokeDasharray="1 8" strokeLinecap="round" />
-              <circle cx="8" cy="12" r="5" stroke="currentColor" strokeWidth="2" />
-              <circle cx="352" cy="58" r="6" fill="currentColor" />
-            </svg>
-            <div className="chart-note mt-2 flex justify-between text-mist">
-              <span>Nederland 52°N</span>
-              <span>Curaçao 12°N</span>
-            </div>
-          </div>
+          <CrossingMap className="mt-10 w-full max-w-xl text-chalk" />
         </Reveal>
 
         <ol className="lg:col-span-6 lg:col-start-7">

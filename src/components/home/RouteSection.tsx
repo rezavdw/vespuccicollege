@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, type CSSProperties } from "react";
-import { ArrowLink, CompassRose, container } from "./ui";
+import { ArrowLink, CompassRose, Waypoint, container } from "./ui";
 import usePrefersReducedMotion from "./usePrefersReducedMotion";
 
 type Stop = {
@@ -81,7 +81,7 @@ const FINISH = "M860 380H1128";
 export default function RouteSection() {
   const mapRef = useRef<HTMLDivElement>(null);
   const still = usePrefersReducedMotion();
-  const { scrollYProgress } = useScroll({ target: mapRef, offset: ["start 0.8", "end 0.6"] });
+  const { scrollYProgress } = useScroll({ target: mapRef, offset: ["start 0.6", "0.8 0.6"] });
 
   // De lijn wordt in drie etappes getekend: brugklas, de drie richtingen, het slot.
   const trunk = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
@@ -112,7 +112,12 @@ export default function RouteSection() {
           </p>
         </div>
 
-        <div ref={mapRef} className="relative mt-14 xl:mt-10 xl:aspect-[1200/820]">
+        <div ref={mapRef} id="routekaart" className="relative mt-14 xl:mt-10 xl:aspect-[1200/820]">
+          {/* De doorlopende route komt bij het vertrekpunt binnen en gaat bij de pijl weer verder. */}
+          <Waypoint className="-left-7 top-[calc(46.34%-6rem)]" triggerEl="routekaart" triggerAt={-0.12} />
+          <Waypoint className="left-[5%] top-[46.34%]" curve="vh" triggerEl="routekaart" triggerAt={0} />
+          <Waypoint className="left-[95%] top-[46.34%]" gap triggerEl="routekaart" triggerAt={0.8} />
+          <Waypoint className="-right-7 top-[calc(46.34%+6rem)]" curve="hv" triggerEl="routekaart" triggerAt={0.95} />
           {/* Desktop: de kaart met de getekende route */}
           <svg
             viewBox="0 0 1200 820"

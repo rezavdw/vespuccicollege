@@ -100,3 +100,66 @@ export function CompassRose({ className = "" }: { className?: string }) {
     </svg>
   );
 }
+
+/**
+ * Onzichtbaar ankerpunt voor de doorlopende route (`JourneyLine`). Plaats het met
+ * `left-*`/`top-*` binnen een `relative` ouder; alleen actief vanaf `xl`.
+ */
+export function Waypoint({
+  className,
+  curve,
+  gap,
+  origin,
+  triggerEl,
+  triggerAt,
+}: {
+  className: string;
+  /** Vorm van het stuk ernaartoe: "s" (standaard), "vh" of "hv" voor een bocht. */
+  curve?: "s" | "vh" | "hv";
+  /** Begin hier een nieuw stuk lijn in plaats van door te trekken. */
+  gap?: boolean;
+  /** Teken hier het vertrekpunt. */
+  origin?: boolean;
+  /** Bereik dit punt wanneer de scroll bij dit deel (0–1) van het element met dit id is. */
+  triggerEl?: string;
+  triggerAt?: number;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      data-waypoint=""
+      data-curve={curve}
+      data-gap={gap ? "" : undefined}
+      data-origin={origin ? "" : undefined}
+      data-trigger-el={triggerEl}
+      data-trigger-at={triggerAt}
+      className={`pointer-events-none absolute hidden h-px w-px xl:block ${className}`}
+    />
+  );
+}
+
+const strokes = {
+  underline: { src: "/images/brush-underline.png", className: "" },
+  swoosh: { src: "/images/brush-swoosh.png", className: "aspect-square" },
+};
+
+/**
+ * Droge penseelstreek zoals in het logo, puur decoratief. De PNG is een masker,
+ * dus de kleur volgt `currentColor`.
+ */
+export function BrushStroke({
+  variant = "underline",
+  className = "",
+}: {
+  variant?: keyof typeof strokes;
+  className?: string;
+}) {
+  const stroke = strokes[variant];
+  return (
+    <span
+      aria-hidden="true"
+      style={{ maskImage: `url(${stroke.src})`, WebkitMaskImage: `url(${stroke.src})` }}
+      className={`pointer-events-none block bg-current [mask-repeat:no-repeat] [mask-size:100%_100%] ${stroke.className} ${className}`}
+    />
+  );
+}

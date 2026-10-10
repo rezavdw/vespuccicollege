@@ -1,10 +1,13 @@
 import Reveal from "./Reveal";
-import { Button, CompassRose, container } from "./ui";
+import { Button, CompassRose, Waypoint, container } from "./ui";
 
 export default function ClosingCta() {
   return (
     <section aria-labelledby="kennismaken" className="relative isolate overflow-hidden bg-orange py-20 text-navy lg:py-32">
       <CompassRose className="absolute -bottom-56 -right-40 -z-10 h-[30rem] w-[30rem] text-navy/15 lg:-bottom-56 lg:-right-20 lg:h-[44rem] lg:w-[44rem] lg:text-navy/25" />
+      <div className="absolute inset-x-0 top-0 mx-auto max-w-7xl">
+        <Waypoint className="right-5 top-0" />
+      </div>
       <Reveal className={container}>
         <h2
           id="kennismaken"

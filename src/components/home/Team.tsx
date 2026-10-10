@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Reveal from "./Reveal";
-import { ArrowLink, container } from "./ui";
+import { ArrowLink, Waypoint, container } from "./ui";
 
 export default function Team() {
   return (
     <section aria-labelledby="team" className="pt-20 lg:pt-32">
-      <div className={container}>
+      <div className={`${container} relative`}>
+        <Waypoint className="right-5 top-0" />
         <div className="grid gap-x-10 gap-y-5 lg:grid-cols-12 lg:items-end">
           <Reveal className="lg:col-span-7">
             <h2 id="team" className="text-[clamp(2.1rem,4.6vw,4rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
@@ -22,7 +23,7 @@ export default function Team() {
           </Reveal>
         </div>
 
-        <Reveal className="-mx-5 mt-10 sm:-mx-8 lg:-mx-12 lg:mt-14">
+        <Reveal className="-mx-5 mt-10 sm:-mx-8 lg:-mx-12 lg:mt-14 xl:mx-0">
           <Image
             src="/images/Groepsfoto-personeel-2026.webp"
             alt="Groepsfoto van het personeel van het Vespucci College voor een kleurrijke muurschildering met een schildpad en een kompasroos"
