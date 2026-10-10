@@ -23,21 +23,29 @@ npm run build
 
 | Pad | Inhoud |
 | --- | --- |
-| `src/lib/site.ts` | Menu, contactgegevens, opleidingen en reviews |
-| `src/app/page.tsx` | Homepage met alle secties |
+| `src/lib/site.ts` | Menu en contactgegevens |
+| `src/app/page.tsx` | Homepage: metadata, JSON-LD en de volgorde van de secties |
+| `src/components/home/` | Eén component per homepage-sectie, plus `Reveal`, `Parallax` en gedeelde UI |
 | `src/app/[...slug]/page.tsx` | Tijdelijke pagina voor subpagina's die nog niet zijn overgezet |
 | `src/components/` | Header, Footer en kleine UI-onderdelen |
 | `src/app/globals.css` | Kleuren en fonts (Tailwind-theme) |
 | `public/images/` | Afbeeldingen van de huidige site |
 
-## Kleuren
+## Kleuren en typografie
 
-| Naam | Hex | Tailwind |
-| --- | --- | --- |
-| Oranje | `#FF821F` | `orange` |
-| Navy | `#1C244C` | `navy` |
-| Blauw | `#417CD4` | `blue` |
-| Crème | `#FBF3E8` | `cream` |
+Tokens staan in `src/app/globals.css`. Oranje is de enige accentkleur.
+
+| Naam | Hex | Tailwind | Gebruik |
+| --- | --- | --- | --- |
+| Oranje | `#FF821F` | `orange` | Vlakken, lijnen, knoppen (met navy tekst) |
+| Ember | `#A8440A` | `ember` | Oranje als tekst op lichte vlakken (AA) |
+| Navy | `#1C244C` | `navy` | Tekst en donkere vlakken |
+| Slate | `#4A5072` | `slate` | Secundaire tekst op licht |
+| Mist | `#C9CDE0` | `mist` | Secundaire tekst op navy |
+| Kalk | `#FDFAF5` | `chalk` | Paginagrond |
+| Zand | `#F3E7D3` | `sand` | Warme vlakken |
+
+Koppen: Bricolage Grotesque (`font-display`). Lopende tekst: Hanken Grotesk (`font-sans`).
 
 ## Werkwijze
 

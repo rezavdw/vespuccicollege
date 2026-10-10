@@ -1,28 +1,47 @@
 @import "tailwindcss";
 
-/* Kleuren overgenomen uit het Elementor-kit van vespuccicollege.net */
+/*
+  Design tokens. Oranje en navy komen uit het logo; kalk en zand uit de gepleisterde
+  schoolmuur op de foto's. Oranje is de enige accentkleur.
+*/
 @theme {
-  --color-orange: #ff821f;
+  --color-orange: #ff821f; /* logo-oranje: vlakken, lijnen, knoppen (met navy tekst) */
+  --color-ember: #a8440a; /* oranje dat als tekst op lichte vlakken AA haalt */
+  --color-navy: #1c244c; /* logo-navy: tekst en donkere vlakken */
+  --color-slate: #4a5072; /* secundaire tekst op lichte vlakken */
+  --color-mist: #c9cde0; /* secundaire tekst op navy */
+  --color-chalk: #fdfaf5; /* paginagrond */
+  --color-sand: #f3e7d3; /* warme vlakken */
+
+  /* Kleuren van de huidige site; nog in gebruik op de niet-overgezette pagina's. */
   --color-orange-dark: #ec732f;
-  --color-navy: #1c244c;
   --color-navy-deep: #10104e;
   --color-blue: #417cd4;
-  --color-sun: #fdb833; /* geel uit de hero-foto */
+  --color-sun: #fdb833;
   --color-cream: #fbf3e8;
   --color-ice: #f1f6ff;
   --color-muted: #7a7a7a;
 
-  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
-  background: #ffffff;
+  background: var(--color-chalk);
   color: var(--color-navy);
+  accent-color: var(--color-orange);
 }
 
 h1,
@@ -30,4 +49,48 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--color-orange);
+  color: var(--color-navy);
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Kaartraster: dunne lengte- en breedtelijnen als achtergrond. */
+@utility chart-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px);
+  background-size: 6rem 6rem;
+}
+
+/* Coördinaten en andere kleine kaartnotities. */
+@utility chart-note {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+/* Rustige binnenkomst van de hero; de tekst is zonder animatie gewoon zichtbaar. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-rise {
+    animation: hero-rise 0.7s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
 }
