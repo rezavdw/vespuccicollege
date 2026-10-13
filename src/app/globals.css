@@ -29,6 +29,9 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* De routekaart als rit: alleen als het scherm er ruimte voor heeft (zie RouteSection). */
+@custom-variant stage (&:where([data-stage], [data-stage] *));
+
 html {
   scroll-behavior: smooth;
 }
@@ -251,4 +254,36 @@ g:not([data-on]) > g > .route-ray {
   .why-brush {
     transition: none;
   }
+}
+
+/* De wegenkaart is even hoog als het scherm onder de kop toelaat; de breedte volgt daaruit. */
+[data-stage] .route-world {
+  --h: min(calc(100vh - 5rem), 760px);
+  top: calc(5rem + (100vh - 5rem - var(--h)) / 2);
+  height: var(--h);
+  width: calc(var(--h) * 3400 / 640);
+}
+
+/* De rit toont alleen wat je al bereikt hebt: teksten, wegwijzer en finish komen pas in beeld als je er bent. */
+[data-stage] .route-card {
+  transition-property: opacity, filter, transform;
+}
+
+[data-stage] :not([data-on]) > .route-card[data-armed] {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(18px);
+}
+
+.route-pop {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition:
+    opacity 0.5s var(--ease-out-expo),
+    transform 0.6s var(--ease-out-expo);
+}
+
+.route-pop:not([data-on]) {
+  opacity: 0;
+  transform: translateY(14px) scale(0.85);
 }
