@@ -53,9 +53,10 @@ function renderContent(page: LegacyPage) {
 
 
 export function generateStaticParams() {
-  // /contact heeft een eigen pagina (src/app/contact).
+  // Deze routes hebben een eigen pagina in src/app.
+  const own = ["/contact", "/aanmelding-info/inventarisatieformulier"];
   return allPages
-    .filter((page) => page.href !== "/contact")
+    .filter((page) => !own.includes(page.href))
     .map((page) => ({ slug: page.href.slice(1).split("/") }));
 }
 
