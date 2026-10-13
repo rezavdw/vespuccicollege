@@ -65,4 +65,4 @@ Afbeeldingen en PDF-documenten staan in `public/legacy/`. De oorspronkelijke tab
 
 `npm run check:content` controleert dekking van alle menuroutes, veilige HTML, lokale bestanden en PDF-signaturen.
 
-PDF-documenten worden met PDF.js lokaal weergegeven als bladerboekjes, inclusief een omslag, toetsenbordbediening en een downloadlink. De PDF-worker, fonts en decoderbestanden worden door `npm install` automatisch vanuit de vastgelegde packageversie naar `public/pdfjs/` gekopieerd. Direct herhaalde sectiekoppen zijn verwijderd; overige tekst blijft letterlijk overgenomen.
+PDF-documenten staan naast elkaar als omslagen met een centraal Vespucci-logo. Een klik opent de originele PDF rechtstreeks in de browser, zonder popup. De titel en downloadlink staan onder de omslag. Direct herhaalde sectiekoppen zijn verwijderd; overige tekst blijft letterlijk overgenomen.
