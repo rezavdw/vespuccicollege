@@ -351,3 +351,21 @@ g:not([data-on]) > g > .route-ray {
 
 
 .legacy-content a.pdf-book-trigger { display: block; color: var(--color-navy); text-decoration: none; }
+
+/* De schepen deinen licht op de golven. */
+@media (prefers-reduced-motion: no-preference) {
+  .route-ship {
+    animation: route-bob 3.2s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes route-bob {
+  from {
+    translate: 0 -1.5px;
+    rotate: -2deg;
+  }
+  to {
+    translate: 0 1.5px;
+    rotate: 2deg;
+  }
+}

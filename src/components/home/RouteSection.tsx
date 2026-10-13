@@ -156,41 +156,53 @@ function pointAt(path: SVGPathElement, t: number) {
   };
 }
 
-/** Auto van bovenaf, met de neus naar rechts; draait mee met de weg. */
-function Car({ innerRef }: { innerRef: (node: SVGGElement | null) => void }) {
+/** Ontdekkingsschip uit de tijd van Vespucci, van opzij, met de boeg naar rechts. */
+function ShipShape() {
   return (
-    <g ref={innerRef} opacity="0">
-      <ellipse cx="-2" cy="3" rx="27" ry="14" fill="#0b1030" opacity="0.35" />
-      <rect
-        x="-25"
-        y="-12.5"
-        width="50"
-        height="25"
-        rx="9"
-        fill="var(--color-orange)"
-      />
-      <rect
-        x="-15"
-        y="-9.5"
-        width="27"
-        height="19"
-        rx="5"
-        fill="var(--color-navy)"
-      />
-      <rect
-        x="-9"
-        y="-10"
-        width="14"
-        height="20"
-        rx="3"
-        fill="var(--color-peach)"
-      />
+    <>
+      {/* Boeggolf en kielzog */}
       <path
-        d="M22-8.5v4M22 4.5v4"
+        d="M-40 13q5-5 10 0M30 13q5-5 10 0M-26 17q5-4 10 0"
         stroke="var(--color-chalk)"
-        strokeWidth="3"
+        strokeWidth="2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Masten */}
+      <path
+        d="M0-2V-52M17-2V-41M-17-2V-36"
+        stroke="var(--color-navy)"
+        strokeWidth="2"
         strokeLinecap="round"
       />
+      {/* Zeilen: bol van de wind, met het kruis op het grootzeil */}
+      <g fill="var(--color-chalk)" stroke="var(--color-navy)" strokeWidth="1.5" strokeLinejoin="round">
+        <path d="M-9-47H9Q16-33 9-19H-9Q-3-33-9-47Z" />
+        <path d="M11-38H23Q28-28 23-17H11Q16-28 11-38Z" />
+        <path d="M-27-13-17-35V-13Z" />
+      </g>
+      <path d="M1-40V-26M-4-34H6" stroke="var(--color-orange)" strokeWidth="3" strokeLinecap="round" />
+      <path d="M0-52l11 3.5-11 3.5Z" fill="var(--color-orange)" />
+      {/* Romp met achterkasteel */}
+      <path
+        d="M-30-13H-21L-19-3H21L34-10C32 2 26 11 15 13H-15C-24 13-29 4-30-13Z"
+        fill="var(--color-navy)"
+        stroke="var(--color-sand)"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <path d="M-18 3H22" stroke="var(--color-orange)" strokeWidth="2" strokeLinecap="round" />
+    </>
+  );
+}
+
+/** Schip op de vaarroute; helt licht mee met de koers en deint op de golven. */
+function Ship({ innerRef }: { innerRef: (node: SVGGElement | null) => void }) {
+  return (
+    <g ref={innerRef} opacity="0">
+      <g className="route-ship" transform="scale(0.92)">
+        <ShipShape />
+      </g>
     </g>
   );
 }
@@ -247,7 +259,6 @@ export default function RouteSection() {
   const markRefs = useRef<(SVGGElement | null)[]>([]);
   const flags = useRef(ALL);
   const signRef = useRef<SVGGElement>(null);
-  const finishRef = useRef<SVGGElement>(null);
   const sealRef = useRef<SVGGElement>(null);
 
   // Op de server en tijdens hydratie de lijst; daarna de rit, als het scherm die aankan.
@@ -272,7 +283,7 @@ export default function RouteSection() {
     target: worldRef,
     offset: ["start 0.6", "0.8 0.6"],
   });
-  // Een lichte veer, zodat de auto glijdt in plaats van met het scrollwiel mee te schokken.
+  // Een lichte veer, zodat het schip glijdt in plaats van met het scrollwiel mee te schokken.
   const progress = useSpring(ride.scrollYProgress, {
     stiffness: 120,
     damping: 28,
@@ -288,7 +299,7 @@ export default function RouteSection() {
   const [progressed, setReached] = useState(ALL);
   const reached = frozen ? ALL : progressed;
   const armed = !frozen;
-  // Etappe (0–3) waarin de auto nu rijdt.
+  // Etappe (0–3) waarin het schip nu vaart.
   const [leg, setLeg] = useState(0);
   // Richting (0–2) waar de bezoeker op dit moment naar kijkt.
   const [focus, setFocus] = useState<number | null>(null);
@@ -300,7 +311,7 @@ export default function RouteSection() {
     useTransform(progress, [MERGE, DIPLOMA], [0, 1]),
     useTransform(progress, [DIPLOMA, 1], [0, 1]),
   ];
-  // De weg wordt vlak voor de auto uit aangelegd: je ziet steeds alleen de etappe waar je bent.
+  // De vaarroute komt vlak voor het schip uit in beeld: je ziet steeds alleen de etappe waar je bent.
   const built = useTransform(
     progress,
     [FORK - 0.05, MERGE - 0.14, MERGE - 0.04, DIPLOMA - 0.06, DIPLOMA + 0.12],
@@ -320,7 +331,7 @@ export default function RouteSection() {
     }
   }, []);
 
-  /** De rit: auto's, camera, paaltjes en haltes voor scrollpositie `p`. */
+  /** De reis: schepen, camera, boeien en haltes voor scrollpositie `p`. */
   const drive = useCallback(
     (p: number) => {
       const world = worldRef.current;
@@ -330,7 +341,7 @@ export default function RouteSection() {
 
       const onBranch = clamp((p - FORK) / (MERGE - FORK));
       const away = clamp((p - DIPLOMA) / (1 - DIPLOMA));
-      // De middelste auto rijdt de hele weg: brugklas, havo, diploma en verder.
+      // Het middelste schip vaart de hele route: brugklas, havo, diploma en verder.
       const main =
         p < FORK
           ? pointAt(trunk, p / FORK)
@@ -346,7 +357,7 @@ export default function RouteSection() {
         if (!car) return;
         car.setAttribute(
           "transform",
-          `translate(${at.x.toFixed(1)} ${at.y.toFixed(1)}) rotate(${at.angle.toFixed(1)})`,
+          `translate(${at.x.toFixed(1)} ${at.y.toFixed(1)}) rotate(${(clamp(at.angle / 50, -1, 1) * 12).toFixed(1)})`,
         );
         const visible =
           i === 1
@@ -360,7 +371,7 @@ export default function RouteSection() {
       const scale = world.offsetHeight / WORLD.h;
       const view = window.innerWidth;
       const stage = p < FORK ? 0 : p < MERGE ? 1 : p < DIPLOMA + 0.07 ? 2 : 3;
-      // De camera rijdt mee en houdt de auto links van het midden. Bij verminderde
+      // De camera rijdt mee en houdt het schip links van het midden. Bij verminderde
       // beweging glijdt hij niet, maar springt hij per etappe naar een vast beeld.
       const framed = [0, view / 2 - 1720 * scale, -Infinity, -Infinity][stage];
       const shift = clamp(
@@ -389,7 +400,6 @@ export default function RouteSection() {
       });
 
       signRef.current?.toggleAttribute("data-on", p >= 0.1);
-      finishRef.current?.toggleAttribute("data-on", p >= MERGE - 0.07);
       sealRef.current?.toggleAttribute("data-on", p >= MERGE - 0.05);
       setLeg(stage);
 
@@ -564,7 +574,18 @@ export default function RouteSection() {
                 <motion.rect x="0" y="0" height={WORLD.h} width={built} />
               </clipPath>
 
-              {/* Berm en asfalt */}
+              <pattern id="route-waves" patternUnits="userSpaceOnUse" width="44" height="20">
+                <path
+                  d="M2 7q5-5 10 0t10 0M24 16q5-5 10 0t10 0"
+                  stroke="var(--color-chalk)"
+                  strokeOpacity="0.5"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              </pattern>
+
+              {/* Ondiep water, vaargeul en golven */}
               <g
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -572,9 +593,9 @@ export default function RouteSection() {
               >
                 <path
                   d={ROADS.join("")}
-                  stroke="var(--color-navy)"
-                  strokeOpacity="0.14"
-                  strokeWidth="62"
+                  stroke="var(--color-blue)"
+                  strokeOpacity="0.28"
+                  strokeWidth="64"
                 />
                 {ROADS.map((d, i) => (
                   <path
@@ -583,7 +604,7 @@ export default function RouteSection() {
                     ref={(node) => {
                       roads.current[i] = node;
                     }}
-                    stroke="var(--color-navy)"
+                    stroke="var(--color-blue)"
                     strokeWidth="46"
                   />
                 ))}
@@ -591,40 +612,21 @@ export default function RouteSection() {
                   <path
                     key={d}
                     d={d}
-                    stroke="var(--color-chalk)"
-                    strokeOpacity="0.55"
-                    strokeWidth="2.5"
-                    strokeDasharray="16 18"
+                    stroke="url(#route-waves)"
+                    strokeWidth="42"
                     strokeLinecap="butt"
                   />
                 ))}
               </g>
 
-              {/* Startstreep */}
+              {/* Kade waar de reis begint */}
               <path
                 d="M160 277V323"
                 stroke="var(--color-chalk)"
                 strokeWidth="5"
               />
 
-              {/* Finish: geblokte streep vlak voor het diploma */}
-              <g transform="translate(2512 277)">
-                <g ref={finishRef} className="route-pop">
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <rect
-                      key={i}
-                      x={(i % 2) * 7.67}
-                      y={Math.floor(i / 2) * 7.67}
-                      width="7.67"
-                      height="7.67"
-                      fill="var(--color-chalk)"
-                      opacity={(i + Math.floor(i / 2)) % 2 ? 0.95 : 0.2}
-                    />
-                  ))}
-                </g>
-              </g>
-
-              {/* De gereden weg */}
+              {/* De gevaren koers */}
               <g stroke="var(--color-orange)" strokeWidth="6">
                 <motion.path d={TRUNK} style={{ pathLength: drawn[0] }} />
                 {BRANCHES.map((d, i) => (
@@ -787,9 +789,9 @@ export default function RouteSection() {
                 </g>
               </g>
 
-              {/* Eén auto vertrekt, drie rijden elk hun richting en komen samen bij het diploma. */}
+              {/* Eén schip vertrekt, drie varen elk hun richting en komen samen bij het diploma. */}
               {[0, 2, 1].map((i) => (
-                <Car
+                <Ship
                   key={i}
                   innerRef={(node) => {
                     cars.current[i] = node;
@@ -807,9 +809,9 @@ export default function RouteSection() {
               <CompassRose className="h-full w-full" />
             </motion.div>
 
-            {/* Lijst: dezelfde route als een weg naar beneden */}
+            {/* Lijst: dezelfde route als een vaargeul naar beneden */}
             <div
-              className="absolute bottom-0 left-5 top-2 w-3 rounded-full bg-navy stage:hidden sm:left-8 lg:left-12"
+              className="absolute bottom-0 left-5 top-2 w-3 rounded-full bg-blue stage:hidden sm:left-8 lg:left-12"
               aria-hidden="true"
             >
               <div className="absolute inset-y-1 left-1/2 w-px -translate-x-1/2 border-l border-dashed border-chalk/50" />
@@ -821,12 +823,13 @@ export default function RouteSection() {
                     className="absolute inset-y-0 left-1/2 -ml-0.5 w-1 origin-top rounded-full bg-orange"
                     style={{ scaleY: walked }}
                   />
-                  <motion.div
-                    className="absolute left-1/2 -ml-[7px] -mt-3 h-6 w-3.5 rounded-[5px] bg-orange ring-2 ring-sand"
+                  <motion.svg
+                    viewBox="-44 -56 88 78"
+                    className="absolute left-1/2 -ml-[18px] -mt-6 w-9 overflow-visible"
                     style={{ top: carTop }}
                   >
-                    <span className="absolute inset-x-[3px] top-1.5 h-2.5 rounded-sm bg-navy" />
-                  </motion.div>
+                    <ShipShape />
+                  </motion.svg>
                 </>
               )}
             </div>
