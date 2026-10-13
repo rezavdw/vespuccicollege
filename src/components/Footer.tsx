@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { contact } from "@/lib/site";
+import { contact, navigation } from "@/lib/site";
 
 const items = [
   { label: "Telefoon", value: contact.phone, href: contact.phoneHref, icon: "M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" },
@@ -12,6 +12,22 @@ const items = [
 export default function Footer() {
   return (
     <footer className="bg-navy text-white">
+      <div className="mx-auto grid max-w-7xl gap-10 border-b border-white/15 px-4 py-16 sm:grid-cols-2 sm:px-6 lg:grid-cols-5 lg:px-8">
+        <div className="sm:col-span-2 lg:col-span-1">
+          <p className="font-serif text-3xl leading-tight">Vespucci<br />College</p>
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/70">Ontdek jezelf, creëer je toekomst.</p>
+        </div>
+        {navigation.filter((item) => item.children).map((item) => (
+          <nav key={item.label} aria-label={item.label}>
+            <h2 className="mb-5 !font-sans text-sm !font-semibold text-white">{item.label}</h2>
+            <ul className="space-y-3">
+              {item.children?.slice(0, 5).map((child) => (
+                <li key={child.href}><Link href={child.href} className="text-sm leading-relaxed text-white/70 hover:text-white hover:underline">{child.label}</Link></li>
+              ))}
+            </ul>
+          </nav>
+        ))}
+      </div>
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
         {items.map((item) => {
           const external = item.href.startsWith("http");
@@ -22,7 +38,7 @@ export default function Footer() {
               {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
               className="group flex items-start gap-4"
             >
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-orange transition-colors group-hover:bg-blue">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-sm bg-blue transition-colors group-hover:bg-orange">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-6 w-6" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                 </svg>

@@ -26,12 +26,12 @@ export function ButtonLink({
   const styles = {
     orange: "bg-blue text-white hover:bg-navy",
     navy: "bg-navy text-white hover:bg-blue",
-    white: "bg-white text-navy hover:bg-blue hover:text-white",
+    white: "border border-navy/20 bg-transparent text-navy hover:bg-navy hover:text-white",
   }[variant];
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-display text-sm font-semibold transition-[color,background-color,box-shadow] hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue ${styles}`}
+      className={`group inline-flex items-center gap-2 rounded-sm px-6 py-4 font-display text-sm font-semibold transition-[color,background-color,box-shadow] hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue ${styles}`}
     >
       {children}
       <Arrow className="transition-transform group-hover:translate-x-1" />
