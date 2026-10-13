@@ -1,59 +1,290 @@
 @import "tailwindcss";
 
-/* Kleuren overgenomen uit het Elementor-kit van vespuccicollege.net */
+/*
+  Design tokens. Oranje en navy komen uit het logo; kalk en zand uit de gepleisterde
+  schoolmuur op de foto's. Oranje is de enige accentkleur.
+*/
 @theme {
-  --color-orange: #ff821f;
+  --color-orange: #ff821f; /* logo-oranje: vlakken, lijnen, knoppen (met navy tekst) */
+  --color-ember: #a8440a; /* oranje dat als tekst op lichte vlakken AA haalt */
+  --color-navy: #1c244c; /* logo-navy: tekst en donkere vlakken */
+  --color-slate: #4a5072; /* secundaire tekst op lichte vlakken */
+  --color-mist: #c9cde0; /* secundaire tekst op navy */
+  --color-chalk: #fdfaf5; /* paginagrond */
+  --color-sand: #f3e7d3; /* warme vlakken */
+  --color-peach: #fbd3b2; /* penseelstreek uit het logo */
+
+  /* Kleuren van de huidige site; nog in gebruik op de niet-overgezette pagina's. */
   --color-orange-dark: #ec732f;
-  --color-navy: #1c244c;
   --color-navy-deep: #10104e;
   --color-blue: #417cd4;
-  --color-sun: #fdb833; /* geel uit de hero-foto */
+  --color-sun: #fdb833;
   --color-cream: #fbf3e8;
   --color-ice: #f1f6ff;
   --color-muted: #7a7a7a;
 
-  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* De routekaart als rit: alleen als het scherm er ruimte voor heeft (zie RouteSection). */
+@custom-variant stage (&:where([data-stage], [data-stage] *));
 
 html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
-  background: #ffffff;
+  background: var(--color-chalk);
   color: var(--color-navy);
+  accent-color: var(--color-orange);
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 400;
+  font-family: var(--font-display);
+  text-wrap: balance;
 }
 
-/* A calmer editorial rhythm, while keeping the Vespucci palette. */
 ::selection {
-  background: var(--color-navy);
-  color: #fff;
+  background: var(--color-orange);
+  color: var(--color-navy);
 }
 
-a:focus-visible,
-button:focus-visible,
-summary:focus-visible {
-  outline: 2px solid var(--color-blue);
-  outline-offset: 4px;
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
-#inhoud {
-  scroll-margin-top: 9rem;
+/* Kaartraster: dunne lengte- en breedtelijnen als achtergrond. */
+@utility chart-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px);
+  background-size: 6rem 6rem;
+}
+
+/* Coördinaten en andere kleine kaartnotities. */
+@utility chart-note {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+/* Rustige binnenkomst van de hero; de tekst is zonder animatie gewoon zichtbaar. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-rise {
+    animation: hero-rise 0.7s var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/*
+  Routekaart: haltes, zegel en tekst reageren op `data-on`, dat de scroll zet zodra de
+  route er is. Zonder `data-armed` (geen JavaScript, verminderde beweging) staat alles er.
+*/
+.route-card,
+.route-dot,
+.route-stub,
+.route-seal,
+.route-ray,
+.route-brush,
+.route-branch {
+  transition-duration: 0.7s;
+  transition-timing-function: var(--ease-out-expo);
+}
+
+.route-card {
+  transition-property: opacity, filter;
+}
+
+:not([data-on]) > .route-card[data-armed] {
+  opacity: 0.28;
+  filter: blur(2px);
+}
+
+.route-dot,
+.route-seal {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition-property: opacity, transform;
+  transition-duration: 0.5s;
+}
+
+g:not([data-on]) > .route-dot,
+li:not([data-on]) .route-dot {
+  opacity: 0;
+  transform: scale(0.3);
+}
+
+g:not([data-on]) > .route-seal {
+  opacity: 0;
+  transform: scale(1.9);
+}
+
+.route-stub {
+  transition-property: transform;
+}
+
+li:not([data-on]) .route-stub {
+  transform: scaleX(0);
+}
+
+.route-ray {
+  stroke-dasharray: 1;
+  transition-property: stroke-dashoffset;
+  transition-duration: 0.45s;
+}
+
+g:not([data-on]) > g > .route-ray {
+  stroke-dashoffset: 1;
+  transition-delay: 0s !important;
+}
+
+.route-brush {
+  transition-property: clip-path;
+  transition-delay: 0.15s;
+  clip-path: inset(0);
+}
+
+:not([data-on]) > .route-card[data-armed] .route-brush {
+  clip-path: inset(0 100% 0 0);
+}
+
+.route-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+
+[data-on] > .route-ping {
+  animation: route-ping 1.1s var(--ease-out-expo) both;
+}
+
+@keyframes route-ping {
+  from {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.4);
+  }
+}
+
+.route-branch {
+  transition-property: stroke-opacity, stroke-width;
+  transition-duration: 0.35s;
+}
+
+.route-branch[data-dim] {
+  stroke-opacity: 0.28;
+}
+
+.route-branch[data-lit] {
+  stroke-width: 8;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+  .route-card,
+  .route-dot,
+  .route-stub,
+  .route-seal,
+  .route-ray,
+  .route-brush,
+  .route-branch {
+    transition: none;
   }
+
+  [data-on] > .route-ping {
+    animation: none;
+  }
+}
+
+/* Kernpunten: het beeld wisselt met een veeg van onder naar boven in plaats van een fade. */
+.why-shot {
+  clip-path: inset(0);
+  transition: clip-path 0.9s var(--ease-out-expo);
+}
+
+.why-shot[data-ahead] {
+  clip-path: inset(100% 0 0 0);
+}
+
+.why-shot > img {
+  transition: transform 1.4s var(--ease-out-expo);
+}
+
+.why-shot:not([data-active]) > img {
+  transform: scale(1.12);
+}
+
+.why-brush {
+  clip-path: inset(0);
+  transition: clip-path 0.9s var(--ease-out-expo) 0.25s;
+}
+
+.why-brush[data-hidden] {
+  clip-path: inset(0 100% 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .why-shot,
+  .why-shot > img,
+  .why-brush {
+    transition: none;
+  }
+}
+
+/* De wegenkaart is even hoog als het scherm onder de kop toelaat; de breedte volgt daaruit. */
+[data-stage] .route-world {
+  --h: min(calc(100vh - 5rem), 760px);
+  top: calc(5rem + (100vh - 5rem - var(--h)) / 2);
+  height: var(--h);
+  width: calc(var(--h) * 3400 / 640);
+}
+
+/* De rit toont alleen wat je al bereikt hebt: teksten, wegwijzer en finish komen pas in beeld als je er bent. */
+[data-stage] .route-card {
+  zoom: var(--card-zoom, 1);
+  transition-property: opacity, filter, transform;
+}
+
+[data-stage] :not([data-on]) > .route-card[data-armed] {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(18px);
+}
+
+.route-pop {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition:
+    opacity 0.5s var(--ease-out-expo),
+    transform 0.6s var(--ease-out-expo);
+}
+
+.route-pop:not([data-on]) {
+  opacity: 0;
+  transform: translateY(14px) scale(0.85);
 }

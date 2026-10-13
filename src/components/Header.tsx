@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { contact, navigation } from "@/lib/site";
+import { navigation } from "@/lib/site";
 
 function Chevron({ className = "" }: { className?: string }) {
   return (
@@ -44,16 +44,8 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 bg-white/95 backdrop-blur transition-shadow ${scrolled ? "shadow-md" : ""}`}
+      className={`sticky top-0 z-50 bg-chalk/95 backdrop-blur transition-shadow ${scrolled ? "shadow-md" : ""}`}
     >
-      <div className="border-b border-white/10 bg-navy text-white">
-        <nav aria-label="Snelle links" className="mx-auto flex max-w-7xl items-center justify-end gap-5 px-4 py-2.5 text-xs font-medium sm:px-6 lg:px-8">
-          <Link href="/agenda" className="hover:underline">Agenda</Link>
-          <Link href="/onze-school/schoolgids" className="hover:underline">Schoolgids</Link>
-          <Link href="/contact" className="hover:underline">Contact</Link>
-          <a href={contact.magister} target="_blank" rel="noopener noreferrer" className="border-l border-white/30 pl-5 hover:underline">Magister</a>
-        </nav>
-      </div>
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="shrink-0" aria-label="Vespucci College — home">
           <Image src="/images/logo.webp" alt="Vespucci College" width={150} height={112} priority className="h-16 w-auto sm:h-[72px]" />
@@ -61,26 +53,29 @@ export default function Header() {
 
         <nav aria-label="Hoofdmenu" className="hidden xl:block">
           <ul className="flex items-center gap-1">
-            {navigation.map((item) => (
+            {/* Contact staat hiernaast al als knop. */}
+            {navigation
+              .filter((item) => item.href !== "/contact")
+              .map((item) => (
               <li key={item.label} className="group relative">
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-1 border-b-2 border-transparent px-3 py-2 font-display text-[15px] font-medium transition-colors hover:text-orange ${
-                    isActive(item.href, item.children) ? "text-orange" : "text-navy"
+                  className={`flex items-center gap-1 rounded-full px-3 py-2 font-display text-[15px] font-medium transition-colors hover:text-ember ${
+                    isActive(item.href, item.children) ? "text-ember" : "text-navy"
                   }`}
                 >
                   {item.label}
                   {item.children && <Chevron className="transition-transform group-hover:rotate-180" />}
                 </Link>
                 {item.children && (
-                  <div className="invisible absolute left-1/2 top-full -translate-x-1/2 pt-3 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                    <ul className="grid max-h-[65vh] w-[min(520px,75vw)] grid-cols-2 overflow-y-auto border-t-4 border-orange bg-white p-4 shadow-xl">
+                  <div className="invisible absolute left-0 top-full pt-2 opacity-0 transition-all group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                    <ul className="w-64 overflow-hidden rounded-xl border border-navy/5 bg-white py-2 shadow-xl">
                       {item.children.map((child) => (
                         <li key={child.href}>
                           <Link
                             href={child.href}
-                            className={`block px-4 py-3 text-sm transition-colors hover:bg-cream hover:text-orange ${
-                              pathname === child.href ? "text-orange" : "text-navy"
+                            className={`block px-5 py-2 text-sm transition-colors hover:bg-cream hover:text-ember ${
+                              pathname === child.href ? "text-ember" : "text-navy"
                             }`}
                           >
                             {child.label}
@@ -96,14 +91,12 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href={contact.magister}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden rounded-sm bg-blue px-6 py-2.5 font-display text-sm font-semibold text-white transition-colors hover:bg-navy sm:inline-block"
+          <Link
+            href="/contact"
+            className="hidden rounded-full bg-orange px-6 py-2.5 font-display text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white sm:inline-block"
           >
-            Magister
-          </a>
+            Contact
+          </Link>
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
@@ -127,7 +120,7 @@ export default function Header() {
         <nav
           id="mobiel-menu"
           aria-label="Mobiel menu"
-          className="max-h-[calc(100dvh-8rem)] overflow-y-auto border-t border-navy/10 bg-white xl:hidden"
+          className="max-h-[calc(100dvh-5rem)] overflow-y-auto border-t border-navy/10 bg-white xl:hidden"
         >
           <ul className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
             {navigation.map((item) => (
@@ -149,7 +142,7 @@ export default function Header() {
                           <li key={child.href}>
                             <Link
                               href={child.href}
-                              className={`block py-1.5 text-sm ${pathname === child.href ? "text-orange" : "text-navy/80"}`}
+                              className={`block py-1.5 text-sm ${pathname === child.href ? "text-ember" : "text-navy/80"}`}
                             >
                               {child.label}
                             </Link>
@@ -161,7 +154,7 @@ export default function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`block py-3 font-display font-medium ${isActive(item.href) ? "text-orange" : "text-navy"}`}
+                    className={`block py-3 font-display font-medium ${isActive(item.href) ? "text-ember" : "text-navy"}`}
                   >
                     {item.label}
                   </Link>
@@ -169,16 +162,6 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <div className="px-4 pb-6 sm:hidden">
-            <a
-              href={contact.magister}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-sm bg-blue py-3 text-center font-display font-semibold text-white"
-            >
-              Magister
-            </a>
-          </div>
         </nav>
       )}
     </header>

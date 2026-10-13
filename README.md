@@ -1,39 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vespucci College — nieuwe website
 
-## Getting Started
+Redesign van [vespuccicollege.net](https://vespuccicollege.net) in Next.js 16, React en Tailwind CSS v4.
+Fase 1: dezelfde kleuren, dezelfde secties en dezelfde teksten als de huidige WordPress-site.
 
-First, run the development server:
+## Starten
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open daarna http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Controleren voordat je pusht:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+## Structuur
 
-To learn more about Next.js, take a look at the following resources:
+| Pad | Inhoud |
+| --- | --- |
+| `src/lib/site.ts` | Menu en contactgegevens |
+| `src/app/page.tsx` | Homepage: metadata, JSON-LD en de volgorde van de secties |
+| `src/components/home/` | Eén component per homepage-sectie, plus `JourneyLine` (doorlopende route), `Reveal`, `Parallax` en gedeelde UI |
+| `src/app/[...slug]/page.tsx` | Tijdelijke pagina voor subpagina's die nog niet zijn overgezet |
+| `src/components/` | Header, Footer en kleine UI-onderdelen |
+| `src/app/globals.css` | Kleuren en fonts (Tailwind-theme) |
+| `public/images/` | Afbeeldingen van de huidige site |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Kleuren en typografie
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Tokens staan in `src/app/globals.css`. Oranje is de enige accentkleur.
 
-## Deploy on Vercel
+| Naam | Hex | Tailwind | Gebruik |
+| --- | --- | --- | --- |
+| Oranje | `#FF821F` | `orange` | Vlakken, lijnen, knoppen (met navy tekst) |
+| Ember | `#A8440A` | `ember` | Oranje als tekst op lichte vlakken (AA) |
+| Navy | `#1C244C` | `navy` | Tekst en donkere vlakken |
+| Slate | `#4A5072` | `slate` | Secundaire tekst op licht |
+| Mist | `#C9CDE0` | `mist` | Secundaire tekst op navy |
+| Kalk | `#FDFAF5` | `chalk` | Paginagrond |
+| Zand | `#F3E7D3` | `sand` | Warme vlakken |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Koppen: Bricolage Grotesque (`font-display`). Lopende tekst: Hanken Grotesk (`font-sans`).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Werkwijze
+
+- Iedereen werkt op een eigen branch (bijvoorbeeld `reza`), nooit direct op `main`.
+- Wijzigingen gaan via een pull request naar `main`.
+- Teksten neem je letterlijk over van de huidige site; verzin geen nieuwe feiten.
 
 ## Team
 
