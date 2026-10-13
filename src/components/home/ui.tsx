@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 export const container = "mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12";
 
@@ -150,15 +150,21 @@ const strokes = {
 export function BrushStroke({
   variant = "underline",
   className = "",
+  style,
+  hidden,
 }: {
   variant?: keyof typeof strokes;
   className?: string;
+  style?: CSSProperties;
+  /** Nog niet gezet; met een `clip-path`-transitie in de class veegt de streek erin. */
+  hidden?: boolean;
 }) {
   const stroke = strokes[variant];
   return (
     <span
       aria-hidden="true"
-      style={{ maskImage: `url(${stroke.src})`, WebkitMaskImage: `url(${stroke.src})` }}
+      data-hidden={hidden ? "" : undefined}
+      style={{ maskImage: `url(${stroke.src})`, WebkitMaskImage: `url(${stroke.src})`, ...style }}
       className={`pointer-events-none block bg-current [mask-repeat:no-repeat] [mask-size:100%_100%] ${stroke.className} ${className}`}
     />
   );

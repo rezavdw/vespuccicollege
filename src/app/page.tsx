@@ -69,7 +69,7 @@ export default function Home() {
       />
       {/* Zonder JavaScript blijft alles zichtbaar. */}
       <noscript>
-        <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
+        <style>{"[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important}"}</style>
       </noscript>
 
       <JourneyLine>
