@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { contact, navigation } from "@/lib/site";
+import { navigation } from "@/lib/site";
 
 function Chevron({ className = "" }: { className?: string }) {
   return (
@@ -53,7 +53,10 @@ export default function Header() {
 
         <nav aria-label="Hoofdmenu" className="hidden xl:block">
           <ul className="flex items-center gap-1">
-            {navigation.map((item) => (
+            {/* Contact staat hiernaast al als knop. */}
+            {navigation
+              .filter((item) => item.href !== "/contact")
+              .map((item) => (
               <li key={item.label} className="group relative">
                 <Link
                   href={item.href}
@@ -88,14 +91,12 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href={contact.magister}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/contact"
             className="hidden rounded-full bg-orange px-6 py-2.5 font-display text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white sm:inline-block"
           >
-            Magister
-          </a>
+            Contact
+          </Link>
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
@@ -161,16 +162,6 @@ export default function Header() {
               </li>
             ))}
           </ul>
-          <div className="px-4 pb-6 sm:hidden">
-            <a
-              href={contact.magister}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-full bg-orange py-3 text-center font-display font-semibold text-navy"
-            >
-              Magister
-            </a>
-          </div>
         </nav>
       )}
     </header>
