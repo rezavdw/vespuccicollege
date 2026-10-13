@@ -130,15 +130,17 @@ const legs = [
   { label: "Vervolg", from: DIPLOMA, to: 1 },
 ];
 
-// De rit vraagt ruimte en beweging; anders tonen we de route als gewone lijst onder elkaar.
-const STAGE_QUERY =
-  "(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
+// De rit vraagt wat ruimte; alleen op telefoonformaat tonen we de route als lijst onder elkaar.
+const STAGE_QUERY = "(min-width: 768px) and (min-height: 460px)";
+const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
 
-function subscribeStage(onChange: () => void) {
-  const media = window.matchMedia(STAGE_QUERY);
+const subscribeTo = (query: string) => (onChange: () => void) => {
+  const media = window.matchMedia(query);
   media.addEventListener("change", onChange);
   return () => media.removeEventListener("change", onChange);
-}
+};
+const subscribeStage = subscribeTo(STAGE_QUERY);
+const subscribeReduced = subscribeTo(REDUCED_QUERY);
 
 const clamp = (n: number, min = 0, max = 1) => Math.min(max, Math.max(min, n));
 
@@ -255,10 +257,12 @@ export default function RouteSection() {
     () => false,
   );
   const reducedMotion = useSyncExternalStore(
-    subscribeStage,
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    subscribeReduced,
+    () => window.matchMedia(REDUCED_QUERY).matches,
     () => true,
   );
+  // Alleen de lijst staat bij verminderde beweging stil; de rit stuur je zelf met scrollen.
+  const frozen = reducedMotion && !staged;
 
   const ride = useScroll({
     target: pinRef,
@@ -282,8 +286,8 @@ export default function RouteSection() {
 
   // Welke haltes al bereikt zijn; zonder JavaScript en bij verminderde beweging allemaal.
   const [progressed, setReached] = useState(ALL);
-  const reached = reducedMotion ? ALL : progressed;
-  const armed = !reducedMotion;
+  const reached = frozen ? ALL : progressed;
+  const armed = !frozen;
   // Etappe (0–3) waarin de auto nu rijdt.
   const [leg, setLeg] = useState(0);
   // Richting (0–2) waar de bezoeker op dit moment naar kijkt.
@@ -297,11 +301,11 @@ export default function RouteSection() {
     useTransform(progress, [DIPLOMA, 1], [0, 1]),
   ];
   // De weg wordt vlak voor de auto uit aangelegd: je ziet steeds alleen de etappe waar je bent.
-  const built = [
-    useTransform(progress, [FORK - 0.05, MERGE - 0.14], [0, 1]),
-    useTransform(progress, [MERGE - 0.14, MERGE - 0.04], [0, 1]),
-    useTransform(progress, [DIPLOMA - 0.06, DIPLOMA + 0.12], [0, 1]),
-  ];
+  const built = useTransform(
+    progress,
+    [FORK - 0.05, MERGE - 0.14, MERGE - 0.04, DIPLOMA - 0.06, DIPLOMA + 0.12],
+    [1100, 2340, 2620, 2620, WORLD.w],
+  );
   const bearing = useSpring(
     useTransform(ride.scrollYProgress, [0, 1], [-200, 0]),
     { stiffness: 60, damping: 9 },
@@ -353,14 +357,21 @@ export default function RouteSection() {
         car.setAttribute("opacity", String(visible));
       });
 
-      // De camera rijdt mee en houdt de auto links van het midden.
       const scale = world.offsetHeight / WORLD.h;
       const view = window.innerWidth;
+      const stage = p < FORK ? 0 : p < MERGE ? 1 : p < DIPLOMA + 0.07 ? 2 : 3;
+      // De camera rijdt mee en houdt de auto links van het midden. Bij verminderde
+      // beweging glijdt hij niet, maar springt hij per etappe naar een vast beeld.
+      const framed = [0, view / 2 - 1720 * scale, -Infinity, -Infinity][stage];
       const shift = clamp(
-        view * 0.38 - main.x * scale,
+        reducedMotion
+          ? Math.min(framed, view * 0.85 - main.x * scale)
+          : view * 0.38 - main.x * scale,
         view - world.offsetWidth,
         0,
       );
+      // Op lage schermen krimpen de teksten mee met de kaart.
+      world.style.setProperty("--card-zoom", Math.min(1, scale / 0.94).toFixed(3));
       world.style.transform = `translate3d(${shift.toFixed(1)}px,0,0)`;
 
       const laneX = (i: number) =>
@@ -380,7 +391,7 @@ export default function RouteSection() {
       signRef.current?.toggleAttribute("data-on", p >= 0.1);
       finishRef.current?.toggleAttribute("data-on", p >= MERGE - 0.07);
       sealRef.current?.toggleAttribute("data-on", p >= MERGE - 0.05);
-      setLeg(p < FORK ? 0 : p < MERGE ? 1 : p < DIPLOMA + 0.07 ? 2 : 3);
+      setLeg(stage);
 
       commit([
         true,
@@ -391,7 +402,7 @@ export default function RouteSection() {
         away >= 0.4,
       ]);
     },
-    [commit],
+    [commit, reducedMotion],
   );
 
   /** De lijst: een halte is bereikt zodra de verticale weg bij het bolletje is. */
@@ -410,12 +421,12 @@ export default function RouteSection() {
   useMotionValueEvent(
     walked,
     "change",
-    (p) => !staged && !reducedMotion && stroll(p),
+    (p) => !staged && !frozen && stroll(p),
   );
 
   useEffect(() => {
     const world = worldRef.current;
-    if (!world || reducedMotion) return;
+    if (!world || frozen) return;
     const update = () =>
       staged ? drive(progress.get()) : stroll(walked.get());
 
@@ -445,7 +456,7 @@ export default function RouteSection() {
       window.removeEventListener("resize", update);
       world.style.transform = "";
     };
-  }, [staged, reducedMotion, drive, stroll, progress, walked]);
+  }, [staged, frozen, drive, stroll, progress, walked]);
 
   const on = (i: number) => reached[i] === "1";
   const branchOf = (i: number) => (i >= 1 && i <= 3 ? i - 1 : null);
@@ -548,33 +559,16 @@ export default function RouteSection() {
                 )}
               </g>
 
-              <mask
-                id="route-built"
-                maskUnits="userSpaceOnUse"
-                x="0"
-                y="0"
-                width={WORLD.w}
-                height={WORLD.h}
-              >
-                <g stroke="#fff" strokeWidth="120">
-                  <path d={TRUNK} />
-                  {BRANCHES.map((d) => (
-                    <motion.path
-                      key={d}
-                      d={d}
-                      style={{ pathLength: built[0] }}
-                    />
-                  ))}
-                  <motion.path d={FINISH} style={{ pathLength: built[1] }} />
-                  <motion.path d={ONWARD} style={{ pathLength: built[2] }} />
-                </g>
-              </mask>
+              {/* De weg bestaat tot hier; de rest wordt aangelegd terwijl je rijdt. */}
+              <clipPath id="route-built">
+                <motion.rect x="0" y="0" height={WORLD.h} width={built} />
+              </clipPath>
 
               {/* Berm en asfalt */}
               <g
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                mask="url(#route-built)"
+                clipPath="url(#route-built)"
               >
                 <path
                   d={ROADS.join("")}
@@ -701,7 +695,7 @@ export default function RouteSection() {
               </g>
 
               {/* Leerjaarpaaltjes: lichten op als je erlangs rijdt */}
-              <g mask="url(#route-built)">
+              <g clipPath="url(#route-built)">
                 {marks.map((mark, i) => (
                   <g
                     key={`${mark.road}-${mark.label}`}
@@ -808,7 +802,7 @@ export default function RouteSection() {
             <motion.div
               aria-hidden="true"
               className="absolute left-[81%] top-[66%] hidden h-36 w-36 text-navy/30 stage:block"
-              style={{ rotate: bearing }}
+              style={reducedMotion ? undefined : { rotate: bearing }}
             >
               <CompassRose className="h-full w-full" />
             </motion.div>
@@ -819,7 +813,7 @@ export default function RouteSection() {
               aria-hidden="true"
             >
               <div className="absolute inset-y-1 left-1/2 w-px -translate-x-1/2 border-l border-dashed border-chalk/50" />
-              {reducedMotion ? (
+              {frozen ? (
                 <div className="absolute inset-y-0 left-1/2 w-1 -translate-x-1/2 rounded-full bg-orange" />
               ) : (
                 <>

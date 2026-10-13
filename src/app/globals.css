@@ -266,6 +266,7 @@ g:not([data-on]) > g > .route-ray {
 
 /* De rit toont alleen wat je al bereikt hebt: teksten, wegwijzer en finish komen pas in beeld als je er bent. */
 [data-stage] .route-card {
+  zoom: var(--card-zoom, 1);
   transition-property: opacity, filter, transform;
 }
 
