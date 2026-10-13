@@ -30,9 +30,9 @@ const moments: Moment[] = [
     },
   },
   {
-    when: "Elke woensdag",
+    when: "Elke dinsdag",
     title: "Keuzewerktijd",
-    text: "Het derde uur kies je zelf bij welk vak je wilt werken, met de vakdocent erbij voor je vragen.",
+    text: "Het vijfde uur kies je zelf bij welk vak je wilt werken, met de vakdocent erbij voor je vragen.",
     link: { label: "Over kwt en begeleidingsles", href: "/begeleiding/kwt-begeleidingsles" },
     image: {
       src: "/legacy/9a0b85c1da20-Individuele-begeleiding1920px.jpg",
