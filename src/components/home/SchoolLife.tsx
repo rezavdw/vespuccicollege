@@ -78,27 +78,38 @@ const moments: Moment[] = [
 ];
 
 // Vanaf dit formaat blijft het scherm staan en schuift de strook met de scroll mee.
-const ROOMY = "(min-width: 768px) and (min-height: 640px)";
+const ROOMY = "(min-width: 768px) and (min-height: 460px)";
 
 export default function SchoolLife() {
   const pinRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLUListElement>(null);
   const roomy = useMediaQuery(ROOMY);
   const still = usePrefersReducedMotion();
-  // Anders: een gewone strook die je zelf opzij veegt.
-  const pinned = roomy && !still;
+  // Op telefoonformaat: een gewone strook die je zelf opzij veegt.
+  const pinned = roomy;
 
   const { scrollYProgress } = useScroll({ target: pinRef, offset: ["start start", "end end"] });
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, restDelta: 0.0004 });
   const travel = useMotionValue(0);
-  const x = useTransform([progress, travel], ([p, distance]: number[]) => -p * distance);
+  // Bij verminderde beweging volgt de strook de scroll direct, zonder naveren.
+  const smooth = useTransform([progress, travel], ([p, distance]: number[]) => -p * distance);
+  const direct = useTransform([scrollYProgress, travel], ([p, distance]: number[]) => -p * distance);
+  const x = still ? direct : smooth;
   // De foto's schuiven in hun lijst iets tegen de strook in.
   const drift = useTransform(progress, [0, 1], ["4%", "-4%"]);
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track || !pinned) return;
-    const measure = () => travel.set(Math.max(0, track.scrollWidth - window.innerWidth));
+    let zoom = 1;
+    const measure = () => {
+      // Op lage schermen krimpt de strook, zodat foto en tekst onder de kop passen.
+      const room = track.parentElement?.clientHeight ?? 0;
+      const natural = track.getBoundingClientRect().height / zoom;
+      zoom = natural > 0 && room > 0 ? Math.min(1, room / natural) : 1;
+      track.style.zoom = String(zoom);
+      travel.set(Math.max(0, track.getBoundingClientRect().width - window.innerWidth));
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(track);
@@ -106,6 +117,7 @@ export default function SchoolLife() {
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", measure);
+      track.style.zoom = "";
     };
   }, [pinned, travel]);
 
@@ -132,7 +144,7 @@ export default function SchoolLife() {
               </p>
             </div>
             <div className="mt-6 h-0.5 bg-navy/15" aria-hidden="true">
-              {pinned && <motion.div className="h-full origin-left bg-orange" style={{ scaleX: progress }} />}
+              {pinned && <motion.div className="h-full origin-left bg-orange" style={{ scaleX: still ? scrollYProgress : progress }} />}
             </div>
           </div>
 
@@ -154,12 +166,12 @@ export default function SchoolLife() {
                   }`}
                 >
                   <div
-                    className={`relative isolate h-[clamp(11rem,calc(100vh-31rem),26rem)] overflow-hidden ${
+                    className={`relative isolate h-[clamp(10rem,calc(100vh-31rem),26rem)] overflow-hidden ${
                       moment.panel?.tone === "navy" ? "bg-navy text-chalk" : moment.panel ? "bg-orange text-navy" : "bg-sand"
                     }`}
                   >
                     {moment.image && (
-                      <motion.div className="absolute -inset-x-[6%] inset-y-0" style={pinned ? { x: drift } : undefined}>
+                      <motion.div className="absolute -inset-x-[6%] inset-y-0" style={pinned && !still ? { x: drift } : undefined}>
                         <Image
                           src={moment.image.src}
                           alt={moment.image.alt}
