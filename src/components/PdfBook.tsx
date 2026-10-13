@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { PDFDocumentLoadingTask, RenderTask } from "pdfjs-dist";
 import type { PageFlip, SizeType } from "page-flip";
@@ -43,7 +44,7 @@ function Cover({ src, title }: PdfDocument) {
     observer.observe(canvas);
     return () => { disposed = true; observer.disconnect(); render?.cancel(); void loading?.destroy(); };
   }, [src]);
-  return <div className="pdf-cover"><span className="pdf-cover-fallback" aria-hidden="true">PDF</span><canvas ref={canvasRef} role="img" aria-label={`Omslag: ${title}`} className={ready ? "opacity-100" : "opacity-0"} /></div>;
+  return <div className="pdf-cover"><span className="pdf-cover-fallback" aria-hidden="true">PDF</span><canvas ref={canvasRef} role="img" aria-label={`Omslag: ${title}`} className={ready ? "opacity-100" : "opacity-0"} /><span className="pdf-cover-brand"><Image src="/images/logo.webp" alt="Vespucci College" width={150} height={112} /></span></div>;
 }
 
 function Reader({ src, title, onClose }: PdfDocument & { onClose: () => void }) {

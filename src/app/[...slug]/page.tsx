@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -18,6 +19,38 @@ type LegacyPage = {
 // Static, sanitized source content: no WordPress scripts or inline event handlers.
 const pages: Record<string, LegacyPage> = importedPages;
 export const dynamicParams = false;
+
+function renderContent(page: LegacyPage) {
+  const parts = page.html.split(/<div data-pdf-book="(\d+)"><\/div>/g);
+  const content: ReactNode[] = [];
+  let books: { document: PdfDocument; heading: string }[] = [];
+  const flushBooks = () => {
+    if (!books.length) return;
+    content.push(<div className="pdf-book-grid" key={content.length}>
+      {books.map(({ document, heading }, index) => <div className="pdf-book-cell" key={index}>
+        {heading && <div className="pdf-book-section-title" dangerouslySetInnerHTML={{ __html: heading }} />}
+        <PdfBook {...document} />
+      </div>)}
+    </div>);
+    books = [];
+  };
+  for (let index = 0; index < parts.length; index += 2) {
+    let html = parts[index];
+    let heading = "";
+    if (index + 1 < parts.length) {
+      const match = html.match(/(<h[2-6][^>]*>[^<]*<\/h[2-6]>)(?:\s|&nbsp;)*$/);
+      if (match) { heading = match[1]; html = html.slice(0, match.index); }
+    }
+    if (html.replace(/&nbsp;|\s/g, "")) {
+      flushBooks();
+      content.push(<div key={content.length} dangerouslySetInnerHTML={{ __html: html }} />);
+    }
+    if (index + 1 < parts.length) books.push({ document: page.documents[Number(parts[index + 1])], heading });
+  }
+  flushBooks();
+  return content;
+}
+
 
 export function generateStaticParams() {
   return allPages.map((page) => ({ slug: page.href.slice(1).split("/") }));
@@ -52,9 +85,7 @@ export default async function Page(props: PageProps<"/[...slug]">) {
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,1fr)_260px] lg:px-8 lg:py-16">
         <article className="min-w-0">
           <div className="legacy-content">
-            {page.html.split(/<div data-pdf-book="(\d+)"><\/div>/g).map((part, index) => index % 2 === 0
-              ? (part.trim() ? <div key={index} dangerouslySetInnerHTML={{ __html: part }} /> : null)
-              : <PdfBook key={index} {...page.documents[Number(part)]} />)}
+            {renderContent(page)}
           </div>
           {page.embeds.map((embed) => (
             <iframe key={embed.src} src={embed.src} title={embed.title} loading="lazy" className="mt-8 h-[450px] w-full rounded-lg border border-navy/15" referrerPolicy="strict-origin-when-cross-origin" />
