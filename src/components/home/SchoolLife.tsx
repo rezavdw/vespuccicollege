@@ -77,15 +77,16 @@ const moments: Moment[] = [
   },
 ];
 
-// Vanaf dit formaat blijft het scherm staan en schuift de strook met de scroll mee.
-const ROOMY = "(min-width: 768px) and (min-height: 460px)";
+// Het scherm blijft staan en de strook schuift met de scroll mee, ook op een telefoon.
+// Alleen op heel lage schermen (telefoon op zijn kant) is daar geen ruimte voor.
+const ROOMY = "(min-height: 460px)";
 
 export default function SchoolLife() {
   const pinRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLUListElement>(null);
   const roomy = useMediaQuery(ROOMY);
   const still = usePrefersReducedMotion();
-  // Op telefoonformaat: een gewone strook die je zelf opzij veegt.
+  // Anders: een gewone strook die je zelf opzij veegt.
   const pinned = roomy;
 
   const { scrollYProgress } = useScroll({ target: pinRef, offset: ["start start", "end end"] });
@@ -130,7 +131,7 @@ export default function SchoolLife() {
       </div>
 
       <div ref={pinRef} className={pinned ? "h-[300vh]" : ""}>
-        <div className={pinned ? "sticky top-0 flex h-screen flex-col overflow-hidden pb-8 pt-28" : "py-20"}>
+        <div className={pinned ? "sticky top-0 flex h-svh flex-col overflow-hidden pb-6 pt-24 sm:pb-8 sm:pt-28" : "py-20"}>
           <div className={container}>
             <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
               <h2
@@ -166,7 +167,7 @@ export default function SchoolLife() {
                   }`}
                 >
                   <div
-                    className={`relative isolate h-[clamp(10rem,calc(100vh-31rem),26rem)] overflow-hidden ${
+                    className={`relative isolate h-[clamp(10rem,calc(100svh-31rem),26rem)] overflow-hidden ${
                       moment.panel?.tone === "navy" ? "bg-navy text-chalk" : moment.panel ? "bg-orange text-navy" : "bg-sand"
                     }`}
                   >
