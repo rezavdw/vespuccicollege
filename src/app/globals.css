@@ -368,3 +368,21 @@ g:not([data-on]) > g > .route-ray {
 @media (max-width: 600px) { .pdf-book-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem 1rem; } }
 
 .pdf-cover canvas { height: calc(100% - 66px); object-position: top; }
+
+/* De schepen deinen licht op de golven. */
+@media (prefers-reduced-motion: no-preference) {
+  .route-ship {
+    animation: route-bob 3.2s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes route-bob {
+  from {
+    translate: 0 -1.5px;
+    rotate: -2deg;
+  }
+  to {
+    translate: 0 1.5px;
+    rotate: 2deg;
+  }
+}
