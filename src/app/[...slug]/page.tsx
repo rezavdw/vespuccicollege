@@ -53,7 +53,10 @@ function renderContent(page: LegacyPage) {
 
 
 export function generateStaticParams() {
-  return allPages.map((page) => ({ slug: page.href.slice(1).split("/") }));
+  // /contact heeft een eigen pagina (src/app/contact).
+  return allPages
+    .filter((page) => page.href !== "/contact")
+    .map((page) => ({ slug: page.href.slice(1).split("/") }));
 }
 
 export async function generateMetadata(props: PageProps<"/[...slug]">): Promise<Metadata> {

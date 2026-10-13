@@ -221,24 +221,7 @@ g:not([data-on]) > g > .route-ray {
   }
 }
 
-/* Kernpunten: het beeld wisselt met een veeg van onder naar boven in plaats van een fade. */
-.why-shot {
-  clip-path: inset(0);
-  transition: clip-path 0.9s var(--ease-out-expo);
-}
-
-.why-shot[data-ahead] {
-  clip-path: inset(100% 0 0 0);
-}
-
-.why-shot > img {
-  transition: transform 1.4s var(--ease-out-expo);
-}
-
-.why-shot:not([data-active]) > img {
-  transform: scale(1.12);
-}
-
+/* Kernpunten: de penseelstreek onder de kop veegt erin. */
 .why-brush {
   clip-path: inset(0);
   transition: clip-path 0.9s var(--ease-out-expo) 0.25s;
@@ -249,8 +232,6 @@ g:not([data-on]) > g > .route-ray {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .why-shot,
-  .why-shot > img,
   .why-brush {
     transition: none;
   }
