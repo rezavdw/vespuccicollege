@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import PdfBook, { type PdfDocument } from "@/components/PdfBook";
 import importedPages from "@/data/legacy-pages.json";
 import { allPages, navigation } from "@/lib/site";
 
@@ -11,6 +12,7 @@ type LegacyPage = {
   html: string;
   embeds: Embed[];
   forms: Embed[];
+  documents: PdfDocument[];
 };
 
 // Static, sanitized source content: no WordPress scripts or inline event handlers.
@@ -49,7 +51,11 @@ export default async function Page(props: PageProps<"/[...slug]">) {
       </section>
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[minmax(0,1fr)_260px] lg:px-8 lg:py-16">
         <article className="min-w-0">
-          <div className="legacy-content" dangerouslySetInnerHTML={{ __html: page.html }} />
+          <div className="legacy-content">
+            {page.html.split(/<div data-pdf-book="(\d+)"><\/div>/g).map((part, index) => index % 2 === 0
+              ? (part.trim() ? <div key={index} dangerouslySetInnerHTML={{ __html: part }} /> : null)
+              : <PdfBook key={index} {...page.documents[Number(part)]} />)}
+          </div>
           {page.embeds.map((embed) => (
             <iframe key={embed.src} src={embed.src} title={embed.title} loading="lazy" className="mt-8 h-[450px] w-full rounded-lg border border-navy/15" referrerPolicy="strict-origin-when-cross-origin" />
           ))}

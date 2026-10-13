@@ -64,3 +64,5 @@ De 38 subpagina's zijn op 13 oktober 2026 overgenomen van vespuccicollege.net. `
 Afbeeldingen en PDF-documenten staan in `public/legacy/`. De oorspronkelijke tabbladen zijn als opeenvolgende inhoudssecties overgenomen. De formulierpagina's gebruiken de originele WordPress-formulieren in een iframe, met een link om het formulier in een nieuw venster te openen; verwerking blijft op vespuccicollege.net. Google Maps blijft extern ingebed. De agenda bevat de originele introductie en de evenementen die op de bronpagina zichtbaar waren tijdens de import.
 
 `npm run check:content` controleert dekking van alle menuroutes, veilige HTML, lokale bestanden en PDF-signaturen.
+
+PDF-documenten worden met PDF.js lokaal weergegeven als bladerboekjes, inclusief een omslag, toetsenbordbediening en een downloadlink. De PDF-worker, fonts en decoderbestanden worden door `npm install` automatisch vanuit de vastgelegde packageversie naar `public/pdfjs/` gekopieerd. Direct herhaalde sectiekoppen zijn verwijderd; overige tekst blijft letterlijk overgenomen.
