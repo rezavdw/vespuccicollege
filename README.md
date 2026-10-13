@@ -26,7 +26,7 @@ npm run build
 | `src/lib/site.ts` | Menu en contactgegevens |
 | `src/app/page.tsx` | Homepage: metadata, JSON-LD en de volgorde van de secties |
 | `src/components/home/` | Eén component per homepage-sectie, plus `JourneyLine` (doorlopende route), `Reveal`, `Parallax` en gedeelde UI |
-| `src/app/[...slug]/page.tsx` | Tijdelijke pagina voor subpagina's die nog niet zijn overgezet |
+| `src/app/[...slug]/page.tsx` | Subpagina's met de originele teksten, documenten en formulieren |
 | `src/components/` | Header, Footer en kleine UI-onderdelen |
 | `src/app/globals.css` | Kleuren en fonts (Tailwind-theme) |
 | `public/images/` | Afbeeldingen van de huidige site |
@@ -56,3 +56,11 @@ Koppen: Bricolage Grotesque (`font-display`). Lopende tekst: Hanken Grotesk (`fo
 ## Team
 
 - Lex
+
+## Subpagina-inhoud
+
+De 38 subpagina's zijn op 13 oktober 2026 overgenomen van vespuccicollege.net. `src/data/legacy-pages.json` bewaart per pagina de bron-URL, importdatum en opgeschoonde HTML. Teksten en documenten zijn een momentopname; inhoudswijzigingen op de originele site worden niet automatisch gesynchroniseerd.
+
+Afbeeldingen en PDF-documenten staan in `public/legacy/`. De oorspronkelijke tabbladen zijn als opeenvolgende inhoudssecties overgenomen. De formulierpagina's gebruiken de originele WordPress-formulieren in een iframe, met een link om het formulier in een nieuw venster te openen; verwerking blijft op vespuccicollege.net. Google Maps blijft extern ingebed. De agenda bevat de originele introductie en de evenementen die op de bronpagina zichtbaar waren tijdens de import.
+
+`npm run check:content` controleert dekking van alle menuroutes, veilige HTML, lokale bestanden en PDF-signaturen.
